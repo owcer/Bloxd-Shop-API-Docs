@@ -1,7 +1,6 @@
-# Custom Shop
+# Shop API
 
-This document lists all the methods and types that can be used with the game API.
-
+This document lists all the methods and types that can be used with the game's Shop API.
 ## Usage
 ### Adding a shop item
 Use `createShopItem(categoryKey, itemKey, item`) to add a shopItem:
@@ -26,7 +25,7 @@ api.configureShopCategory("Special",{
 ```
 
 ## Methods
-### `ShopItem` methods:
+### `ShopItem` methods
 ```js
 /**
  * Create a new shop item under the given category.
@@ -103,7 +102,7 @@ updateShopItemForPlayer(playerId, categoryKey, itemKey, changes)
  */
 resetShopItemForPlayer(playerId, categoryKey, itemKey)
 ```
-### `ShopCategory` methods:
+### `ShopCategory` methods
 ```js
 /**
  * Set properties of a shop category.
@@ -124,8 +123,38 @@ configureShopCategory(categoryKey, config)
  */
 configureShopCategoryForPlayer(playerId, categoryKey, config)
 ```
+### Miscellaneous methods
+```js
+/**
+ * Show the shop tutorial for a player. Will not be shown if they have ever seen the shop tutorial in your game before.
+ *
+ * @param {PlayerId} playerId
+ * @returns {void}
+ */
+showShopTutorial(playerId)
 
----
+/**
+ * Show a message over the shop in the same place that a shop item's onBoughtMessage is shown.
+ * Displays for a couple seconds before disappearing
+ * Use case is to show a dynamic message when player buys an item
+ *
+ * @param {PlayerId} playerId
+ * @param {string | CustomTextStyling} info
+ * @returns {void}
+ */
+sendOverShopInfo(playerId, info)
+
+/**
+ * Open the shop UI for a player
+ *
+ * @param {PlayerId} playerId
+ * @param {boolean} [toggle] - Whether to close the shop if it's already open
+ * @param {PNull<ShopCategoryKey>} [forceCategoryKey] - If set, will change the shop to this category
+ * @param {boolean} [onlyIfNonEmpty] - If true, will only open the shop if the category (or shop, if no category is provided) is non-empty
+ * @returns {void}
+ */
+openShop(playerId, toggle, forceCategoryKey, onlyIfNonEmpty)
+```
 
 ## Callback
 
@@ -141,14 +170,12 @@ configureShopCategoryForPlayer(playerId, categoryKey, config)
 onPlayerBoughtShopItem = (playerId: PlayerId, categoryKey: ShopCategoryKey, itemKey: ShopItemKey, item: BoughtShopItem, userInput?: string) => {}
 ```
 
----
-
 ## Referenced Types:
 ```ts
 type ShopItem = {
     image: string
-    cost?: number
-    currency?: string
+    cost?: number // Only for the special currencies like Coal and Diamond found on the bottom-left of shop in gamemodes like Bedwars,
+    currency?: string // Same thing as cost, only for special currencies. Note: there is currently no way to use these special currencies.
     amount?: number // Display amount shown on the shop tile image (0 and 1 are not displayed)
     imageColour?: string
     canBuy?: boolean
@@ -157,7 +184,7 @@ type ShopItem = {
     customTitle?: string | CustomTextStyling
     description?: string | CustomTextStyling
     onBoughtMessage?: string | CustomTextStyling
-    redDot?: boolean
+    redDot?: boolean // The red "unread" dot that indicates "New Item Available" in Bedwars
     forceRemoveRedDot?: boolean
     badge?: { text: string | CustomTextStyling; type: "new" | "lucky" }
     userInput?: ShopItemUserInput
@@ -182,3 +209,8 @@ type ShopCategoryConfig = Partial<{
     description: string | CustomTextStyling
 }>
 ```
+## Helpers
+
+|Name|Description|Link|
+|:-:|:-:|:-:|
+|ats - add to shop|Easily make a custom shop with buy and sell for multiple items and rngs|[ats](/ats.js)|
